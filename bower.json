@@ -1,0 +1,21 @@
+{
+  "name": "twach",
+  "homepage": "https://github.com/CreatureMyst/twach",
+  "authors": [
+    "Dima Trish <git@dimatrish.ru>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^3.3.6"
+  }
+}
