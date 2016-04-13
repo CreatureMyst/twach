@@ -2,26 +2,75 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
+use AppBundle\Form\UserType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class DefaultController extends Controller
 {
     /**
+     * Страница регистрации/авторизации.
+     *
      * @Route("/", name="homepage")
+     * @return Response
      */
     public function indexAction(Request $request)
     {
-        return $this->render('AppBundle:default:index.html.twig');
+        $user = new User();
+
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        /** @var User $userExists */
+        $userExists = $this->getDoctrine()->getRepository('AppBundle:User')
+            ->findOneBy(['username' => $form->getData()->getUsername()]);
+
+        if($userExists) {
+            $this->authenticateUser($userExists);
+            return $this->redirectToRoute('app');
+        }
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            $this->authenticateUser($user);
+            return $this->redirectToRoute('app');
+        }
+
+        return $this->render('AppBundle:default:index.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
+     * Страница приложения.
+     *
      * @Route("/app", name="app")
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @Security("has_role('ROLE_USER')")
+     * @return Response
      */
     public function appAction()
     {
         return $this->render('AppBundle:default:app.html.twig');
+    }
+
+    /**
+     * Метод авторизует юзера.
+     *
+     * @param User $user
+     * @return void
+     */
+    protected function authenticateUser(User $user)
+    {
+        $token = new UsernamePasswordToken($user, null, 'secured_area', $user->getRoles());
+        $this->get('security.context')->setToken($token);
+        $this->get('session')->set('_security_secured_area', serialize($token));
     }
 }

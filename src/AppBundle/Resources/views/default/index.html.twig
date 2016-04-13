@@ -9,7 +9,18 @@
             <div class="col-sm-6 col-sm-offset-3">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <h3 class="text-center">Представься, мразь!</h3>
+                        <h3 class="text-center">Представься!</h3>
+
+                        {{ form_start(form) }}
+                            <p>
+                                {{ form_widget(form.username, { attr: { class: 'form-control' }}) }}
+                                {{ form_errors(form.username) }}
+                            </p>
+
+                            <p class="text-center">
+                                <button type="submit" class="btn btn-primary">Поехали</button>
+                            </p>
+                        {{ form_end(form) }}
                     </div>
                 </div>
             </div>
