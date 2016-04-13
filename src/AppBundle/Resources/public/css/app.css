@@ -1,6 +1,77 @@
+.red-rounded-button {
+  background-color: red;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #FFFFFF;
+  text-align: center;
+  padding: 5px 0 0 0;
+  transition: all 0.3s ease;
+  width: 30px;
+  height: 30px;
+}
+.red-rounded-button:hover {
+  opacity: .7;
+}
+/*******************/
 body {
   background-color: #F0F0F0;
 }
 .center-margin {
   margin-top: 10%;
+}
+.messages .message {
+  background-color: #FFFFFF;
+  margin: 10px 0;
+  border-radius: 5px;
+  padding: 10px;
+}
+.messages .message .user {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+.messages .message .attachments {
+  margin: 10px 30px;
+  border: 1px solid #F0F0F0;
+  padding: 10px;
+  border-radius: 5px;
+}
+.messages .message .date {
+  font-size: 0.7em;
+  opacity: .7;
+}
+.messages .message .likes {
+  background-color: red;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #FFFFFF;
+  text-align: center;
+  padding: 5px 0 0 0;
+  transition: all 0.3s ease;
+  width: 30px;
+  height: 30px;
+  font-weight: bold;
+}
+.messages .message .likes:hover {
+  opacity: .7;
+}
+.twach-add-button {
+  background-color: red;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #FFFFFF;
+  text-align: center;
+  padding: 5px 0 0 0;
+  transition: all 0.3s ease;
+  width: 30px;
+  height: 30px;
+  width: 100px;
+  height: 100px;
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+  font-size: 3em;
+  padding: 25px 0 0 3px;
+}
+.twach-add-button:hover {
+  opacity: .7;
 }

@@ -1,0 +1,4 @@
+app_twach:
+    channel: app/twach
+    handler:
+        callback: 'app.twach'

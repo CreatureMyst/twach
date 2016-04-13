@@ -2,6 +2,39 @@
 
 {% block body %}
     <div class="container">
-        Test
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-2">
+                <div class="messages">
+                    <div class="message prototype">
+                        <div class="user">User</div>
+                        <div class="message">Hello world</div>
+                        <div class="attachments">
+                            <div class="item link">
+                                <a href="#">Link</a>
+                            </div>
+                        </div>
+
+                        <div class="pull-left">
+                            <div class="date">27.09.2016 в 16:00</div>
+                        </div>
+                        <div class="pull-right">
+                            <div class="likes">7</div>
+                        </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <div class="twach-add-button">
+        <i class="glyphicon glyphicon-plus"></i>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('bundles/goswebsocket/js/gos_web_socket_client.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/goswebsocket/js/vendor/autobahn.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/app/js/ws_client.js') }}"></script>
 {% endblock %}

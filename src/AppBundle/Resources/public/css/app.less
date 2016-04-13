@@ -1,4 +1,19 @@
 @color-gray: #F0F0F0;
+@color-white: #FFFFFF;
+@color-red: red;
+
+
+.red-rounded-button {
+  background-color: @color-red; border-radius: 50%; cursor: pointer;
+  color: @color-white; text-align: center; padding: 5px 0 0 0;
+  transition: all 0.3s ease; width: 30px; height: 30px;
+
+  &:hover {
+    opacity: .7;
+  }
+}
+
+/*******************/
 
 body {
   background-color: @color-gray;
@@ -6,4 +21,31 @@ body {
 
 .center-margin {
   margin-top: 10%;
+}
+
+.messages {
+
+  .message {
+    background-color: @color-white; margin: 10px 0;
+    border-radius: 5px; padding: 10px;
+
+    .user { font-size: 1.2em; font-weight: bold; }
+
+    .attachments {
+      margin: 10px 30px; border: 1px solid @color-gray;
+      padding: 10px; border-radius: 5px;
+    }
+
+    .date { font-size: 0.7em; opacity: .7; }
+    .likes {
+      .red-rounded-button;
+      font-weight: bold;
+    }
+  }
+}
+
+.twach-add-button {
+  .red-rounded-button;
+  width: 100px; height: 100px; position: fixed; bottom: 50px; right: 50px;
+  font-size: 3em; padding: 25px 0 0 3px;
 }

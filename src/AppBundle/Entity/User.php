@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
@@ -28,6 +29,20 @@ class User implements AdvancedUserInterface, \Serializable
      * @ORM\Column(name="username", type="string", length=255, unique=true)
      */
     private $username;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Message", mappedBy="user")
+     */
+    private $messages;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="MessageLike", mappedBy="user")
+     */
+    private $likes;
 
 
     /**
@@ -117,5 +132,78 @@ class User implements AdvancedUserInterface, \Serializable
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->messages = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add messages
+     *
+     * @param \AppBundle\Entity\Message $messages
+     * @return User
+     */
+    public function addMessage(\AppBundle\Entity\Message $messages)
+    {
+        $this->messages[] = $messages;
+
+        return $this;
+    }
+
+    /**
+     * Remove messages
+     *
+     * @param \AppBundle\Entity\Message $messages
+     */
+    public function removeMessage(\AppBundle\Entity\Message $messages)
+    {
+        $this->messages->removeElement($messages);
+    }
+
+    /**
+     * Get messages
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+
+    /**
+     * Add likes
+     *
+     * @param \AppBundle\Entity\MessageLike $likes
+     * @return User
+     */
+    public function addLike(\AppBundle\Entity\MessageLike $likes)
+    {
+        $this->likes[] = $likes;
+
+        return $this;
+    }
+
+    /**
+     * Remove likes
+     *
+     * @param \AppBundle\Entity\MessageLike $likes
+     */
+    public function removeLike(\AppBundle\Entity\MessageLike $likes)
+    {
+        $this->likes->removeElement($likes);
+    }
+
+    /**
+     * Get likes
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getLikes()
+    {
+        return $this->likes;
     }
 }

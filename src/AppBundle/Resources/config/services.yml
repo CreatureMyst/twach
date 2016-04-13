@@ -1,0 +1,20 @@
+services:
+    app.ws.twach_topic:
+        class: AppBundle\Service\TwachTopic
+        arguments:
+            - "@gos_web_socket.websocket.client_manipulator"
+        tags:
+            - { name: gos_web_socket.topic }
+
+    pdo:
+        class: PDO
+        arguments:
+            dsn: mysql:host=%database_host%;port=%database_port%;dbname=%database_name%
+            user: %database_user%
+            password: %database_password%
+        calls:
+            - [ setAttribute, [3, 2] ] # \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION
+
+    session.handler.pdo:
+        class: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+        arguments: [@pdo, { lock_mode: 0 }]

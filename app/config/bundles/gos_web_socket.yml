@@ -2,3 +2,10 @@ gos_web_socket:
     server:
         host: 127.0.0.1
         port: 8080
+        router:
+            resources:
+                - "@AppBundle/Resources/config/pubsub_routing.yml"
+
+    client:
+        firewall: secured_area
+        session_handler: @session.handler.pdo
