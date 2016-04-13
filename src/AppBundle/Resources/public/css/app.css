@@ -1,7 +1,7 @@
-.red-rounded-button {
-  background-color: red;
+.rounded-button {
   border-radius: 50%;
   cursor: pointer;
+  background-color: #999999;
   color: #FFFFFF;
   text-align: center;
   padding: 5px 0 0 0;
@@ -9,7 +9,7 @@
   width: 30px;
   height: 30px;
 }
-.red-rounded-button:hover {
+.rounded-button:hover {
   opacity: .7;
 }
 /*******************/
@@ -40,9 +40,9 @@ body {
   opacity: .7;
 }
 .messages .message .likes {
-  background-color: red;
   border-radius: 50%;
   cursor: pointer;
+  background-color: #999999;
   color: #FFFFFF;
   text-align: center;
   padding: 5px 0 0 0;
@@ -54,10 +54,13 @@ body {
 .messages .message .likes:hover {
   opacity: .7;
 }
-.twach-add-button {
+.messages .message .likes.liked {
   background-color: red;
+}
+.twach-add-button {
   border-radius: 50%;
   cursor: pointer;
+  background-color: #999999;
   color: #FFFFFF;
   text-align: center;
   padding: 5px 0 0 0;
@@ -71,6 +74,7 @@ body {
   right: 50px;
   font-size: 3em;
   padding: 25px 0 0 3px;
+  background-color: red;
 }
 .twach-add-button:hover {
   opacity: .7;

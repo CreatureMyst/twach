@@ -23,6 +23,29 @@
 
                         <div class="clearfix"></div>
                     </div>
+
+                    {% for message in messages %}
+                        <div class="message">
+                            <div class="user">{{ message.user.username }}</div>
+                            <div class="message">{{ message.text }}</div>
+
+                            {% if message.attachments | length %}
+                                <div class="attachments">
+                                    {% for attach in message.attachments %}
+                                        <div class="item">{{ attach.resource }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div class="pull-left">
+                                <div class="date">{{ message.createdAt | date('d.m.Y в H:i') }}</div>
+                            </div>
+                            <div class="pull-right">
+                                <div class="likes">{{ message.likes | length }}</div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

@@ -2,7 +2,10 @@
 
 namespace AppBundle\Repository;
 
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping;
 
 /**
  * MessageRepository
@@ -12,4 +15,57 @@ use Doctrine\ORM\EntityRepository;
  */
 class MessageRepository extends EntityRepository
 {
+    private $criteria;
+
+    public function __construct(EntityManager $em, Mapping\ClassMetadata $class)
+    {
+        parent::__construct($em, $class);
+        $this->criteria = new Criteria();
+    }
+
+    /**
+     * Лимит выдачи.
+     *
+     * @param int $limit
+     * @return $this
+     */
+    public function limit($limit)
+    {
+        $this->criteria->setMaxResults($limit);
+        return $this;
+    }
+
+    /**
+     * Оффсет выдачи.
+     *
+     * @param int $page Номер страницы.
+     * @return $this
+     */
+    public function page($page = 0)
+    {
+        $perPage = 20;  // TODO: Вынести в конфиг
+        $this->criteria->setFirstResult($perPage * $page);
+        return $this;
+    }
+
+    /**
+     * Возвращает DoctrineCollection по критериям.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAll()
+    {
+        $this->criteria->orderBy(['createdAt' => 'DESC']);
+        return $this->matching($this->criteria);
+    }
+
+    /**
+     * Возвращает первую сущность по критериям.
+     *
+     * @return mixed
+     */
+    public function getOne()
+    {
+        return $this->getAll()->first();
+    }
 }

@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
+use AppBundle\Repository\MessageRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -58,7 +59,13 @@ class DefaultController extends Controller
      */
     public function appAction()
     {
-        return $this->render('AppBundle:default:app.html.twig');
+        /** @var MessageRepository $repo */
+        $repo = $this->getDoctrine()->getRepository('AppBundle:Message');
+        $messages = $repo->limit(20)->getAll();
+        
+        return $this->render('AppBundle:default:app.html.twig', [
+            'messages' => $messages,
+        ]);
     }
 
     /**

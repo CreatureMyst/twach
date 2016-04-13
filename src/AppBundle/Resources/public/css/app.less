@@ -1,10 +1,11 @@
 @color-gray: #F0F0F0;
+@color-gray-dark: #999999;
 @color-white: #FFFFFF;
 @color-red: red;
 
 
-.red-rounded-button {
-  background-color: @color-red; border-radius: 50%; cursor: pointer;
+.rounded-button {
+  border-radius: 50%; cursor: pointer; background-color: @color-gray-dark;
   color: @color-white; text-align: center; padding: 5px 0 0 0;
   transition: all 0.3s ease; width: 30px; height: 30px;
 
@@ -38,14 +39,18 @@ body {
 
     .date { font-size: 0.7em; opacity: .7; }
     .likes {
-      .red-rounded-button;
+      .rounded-button;
       font-weight: bold;
+
+      &.liked {
+        background-color: @color-red;
+      }
     }
   }
 }
 
 .twach-add-button {
-  .red-rounded-button;
+  .rounded-button;
   width: 100px; height: 100px; position: fixed; bottom: 50px; right: 50px;
-  font-size: 3em; padding: 25px 0 0 3px;
+  font-size: 3em; padding: 25px 0 0 3px; background-color: @color-red;
 }
