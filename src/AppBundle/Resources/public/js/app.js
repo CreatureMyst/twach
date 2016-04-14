@@ -231,6 +231,21 @@ function App(wsUri)
     this.activateForm = function()
     {
         var _this = this;
+
+        function loading(action)
+        {
+            switch(action) {
+                case 'hide':
+                    _this.objects.wrappers.modal.find('.loader').hide();
+                    _this.objects.wrappers.modal.find('.controls').show();
+                    break;
+                default:
+                    _this.objects.wrappers.modal.find('.loader').show();
+                    _this.objects.wrappers.modal.find('.controls').hide();
+                    break;
+            }
+        }
+
         this.objects.wrappers.form.find('input[type="file"]').off('change.twach').on('change.twach', function(e) {
             var files = e.target.files;
             var formData = new FormData();
@@ -239,6 +254,7 @@ function App(wsUri)
                 formData.append(key, val);
             });
 
+            loading();
             $.ajax({
                 url: '/app/file-upload',
                 data: formData,
@@ -251,6 +267,7 @@ function App(wsUri)
                         resource: filename
                     };
 
+                    loading('hide');
                     _this.formData.attachments.push(attach);
                 }
             });

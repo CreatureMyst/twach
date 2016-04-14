@@ -36,8 +36,11 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Отбой</button>
-                <button type="submit" class="btn btn-primary" id="twach-form-submit">Запилить пост</button>
+                <div class="loader">Момент...</div>
+                <div class="controls">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Отбой</button>
+                    <button type="submit" class="btn btn-primary" id="twach-form-submit">Запилить пост</button>
+                </div>
             </div>
         </div>
         {{ form_end(form) }}
