@@ -30,20 +30,6 @@ class User implements AdvancedUserInterface, \Serializable
      */
     private $username;
 
-    /**
-     * @var ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="Message", mappedBy="user")
-     */
-    private $messages;
-
-    /**
-     * @var ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="MessageLike", mappedBy="user")
-     */
-    private $likes;
-
 
     /**
      * Get id
@@ -206,4 +192,11 @@ class User implements AdvancedUserInterface, \Serializable
     {
         return $this->likes;
     }
+
+    function __toString()
+    {
+        return $this->getUsername();
+    }
+
+
 }

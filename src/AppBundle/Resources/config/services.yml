@@ -3,6 +3,8 @@ services:
         class: AppBundle\Service\TwachTopic
         arguments:
             - "@gos_web_socket.websocket.client_manipulator"
+            - "@app.service.message"
+            - "@security.context"
         tags:
             - { name: gos_web_socket.topic }
 
@@ -18,3 +20,7 @@ services:
     session.handler.pdo:
         class: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
         arguments: [@pdo, { lock_mode: 0 }]
+
+    app.service.message:
+        class: AppBundle\Service\MessageService
+        arguments: ["@doctrine.orm.entity_manager"]

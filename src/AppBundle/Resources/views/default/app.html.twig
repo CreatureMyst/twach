@@ -7,7 +7,7 @@
                 <div class="messages">
                     <div class="message prototype">
                         <div class="user">User</div>
-                        <div class="message">Hello world</div>
+                        <div class="text">Hello world</div>
                         <div class="attachments">
                             <div class="item link">
                                 <a href="#">Link</a>
@@ -15,10 +15,10 @@
                         </div>
 
                         <div class="pull-left">
-                            <div class="date">27.09.2016 в 16:00</div>
+                            <div class="date">Только что</div>
                         </div>
                         <div class="pull-right">
-                            <div class="likes">7</div>
+                            <div class="likes">0</div>
                         </div>
 
                         <div class="clearfix"></div>
@@ -27,7 +27,7 @@
                     {% for message in messages %}
                         <div class="message">
                             <div class="user">{{ message.user.username }}</div>
-                            <div class="message">{{ message.text }}</div>
+                            <div class="text">{{ message.text }}</div>
 
                             {% if message.attachments | length %}
                                 <div class="attachments">
@@ -51,8 +51,40 @@
         </div>
     </div>
 
-    <div class="twach-add-button">
+    <div class="twach-add-button" data-toggle="modal" data-target="#twach-modal">
         <i class="glyphicon glyphicon-plus"></i>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="twach-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Новый пост</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div id="twach-form">
+                        {{ form_start(form) }}
+                            {{ form_widget(form.text, { attr: { class: 'form-control' }}) }}
+
+                            {{ form_widget(form.attachments) }}
+                        {{ form_end(form) }}
+                    </div>
+
+                    <p>
+                        <a href="#"><i class="glyphicon glyphicon-link"></i></a>
+                        <a href="#"><i class="glyphicon glyphicon-facetime-video"></i></a>
+                        <a href="#"><i class="glyphicon glyphicon-picture"></i></a>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Отбой</button>
+                    <button type="button" class="btn btn-primary" id="twach-form-submit">Запилить пост</button>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 

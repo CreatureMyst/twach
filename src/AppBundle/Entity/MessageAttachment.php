@@ -12,6 +12,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MessageAttachment
 {
+    const TYPE_LINK = 1;        // Ссылка
+    const TYPE_IMAGE = 2;       // Изображение
+    const TYPE_YOUTUBE = 3;     // Ролик с YouTube
+
+    public static $types = [
+        self::TYPE_LINK => 'Ссылка',
+        self::TYPE_IMAGE => 'Изображение',
+        self::TYPE_YOUTUBE => 'YouTube',
+    ];
+
     /**
      * @var int
      *
@@ -65,7 +75,7 @@ class MessageAttachment
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -88,7 +98,7 @@ class MessageAttachment
     /**
      * Get messageId
      *
-     * @return integer 
+     * @return integer
      */
     public function getMessageId()
     {
@@ -111,7 +121,7 @@ class MessageAttachment
     /**
      * Get type
      *
-     * @return integer 
+     * @return integer
      */
     public function getType()
     {
@@ -134,7 +144,7 @@ class MessageAttachment
     /**
      * Get resource
      *
-     * @return string 
+     * @return string
      */
     public function getResource()
     {
@@ -157,7 +167,7 @@ class MessageAttachment
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -180,7 +190,7 @@ class MessageAttachment
     /**
      * Get message
      *
-     * @return \AppBundle\Entity\Message 
+     * @return \AppBundle\Entity\Message
      */
     public function getMessage()
     {

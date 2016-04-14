@@ -46,7 +46,7 @@ class Message
     /**
      * @var User
      *
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="messages")
+     * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;
@@ -69,7 +69,6 @@ class Message
     {
         $this->setCreatedAt(new \DateTime());
     }
-
 
     /**
      * Get id
@@ -237,5 +236,16 @@ class Message
     public function getLikes()
     {
         return $this->likes;
+    }
+
+    public function serialize()
+    {
+        return json_encode([
+            'username' => $this->getUser()->getUsername(),
+            'text' => $this->getText(),
+            'attachments' => $this->getAttachments(),
+            'likes' => $this->getLikes(),
+            'createdAt' => $this->getCreatedAt()->format('d.m.Y в H:i'),
+        ]);
     }
 }

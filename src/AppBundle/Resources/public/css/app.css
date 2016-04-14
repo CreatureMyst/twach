@@ -57,6 +57,9 @@ body {
 .messages .message .likes.liked {
   background-color: red;
 }
+.messages .message.prototype {
+  display: none;
+}
 .twach-add-button {
   border-radius: 50%;
   cursor: pointer;

@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
+use AppBundle\Form\MessageType;
 use AppBundle\Form\UserType;
 use AppBundle\Repository\MessageRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -62,9 +63,12 @@ class DefaultController extends Controller
         /** @var MessageRepository $repo */
         $repo = $this->getDoctrine()->getRepository('AppBundle:Message');
         $messages = $repo->limit(20)->getAll();
+
+        $form = $this->createForm(MessageType::class);
         
         return $this->render('AppBundle:default:app.html.twig', [
             'messages' => $messages,
+            'form' => $form->createView(),
         ]);
     }
 

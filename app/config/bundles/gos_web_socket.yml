@@ -7,5 +7,5 @@ gos_web_socket:
                 - "@AppBundle/Resources/config/pubsub_routing.yml"
 
     client:
-        firewall: secured_area
+        firewall: main
         session_handler: @session.handler.pdo
