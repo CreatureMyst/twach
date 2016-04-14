@@ -2,9 +2,12 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\AppBundle;
 use AppBundle\Entity\Message;
 use AppBundle\Entity\MessageAttachment;
+use AppBundle\Entity\MessageLike;
 use AppBundle\Entity\User;
+use AppBundle\Repository\MessageLikeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class MessageService
@@ -46,12 +49,78 @@ class MessageService
         // Особый костыль. Почему-то в объект $user, который передается в метод
         // воспринимается доктриной как NotPersistent, хотя это не так.
         // Такой костыль помогает исправить траблу.
-        $user = $this->getEm()->find('AppBundle\Entity\User', $user->getId());
+        $user = $this->getEm()->find(User::class, $user->getId());
 
         $this->message = new Message();
         $this->getMessage()->setUser($user);
 
         return $this;
+    }
+
+    /**
+     * Метод удаляет сообщение по ID, при этом проверяя владельца сообщения.
+     *
+     * @param $messageId
+     * @param User $user
+     * @return bool
+     */
+    public function deleteMessage($messageId, User $user)
+    {
+        /** @var Message $message */
+        $message = $this->getEm()->find(Message::class, $messageId);
+        if(!$message) {
+            return false;
+        }
+
+        if($message->getUser()->getId() !== $user->getId()) {
+            return false;
+        }
+
+        $this->getEm()->remove($message);
+        $this->getEm()->flush();
+
+        return true;
+    }
+
+    /**
+     * Метод добавляет или снимает лайк с записи.
+     *
+     * @param $messageId
+     * @param User $user
+     * @return bool|int
+     */
+    public function likeMessage($messageId, User $user)
+    {
+        /** @var Message $message */
+        $message = $this->getEm()->find(Message::class, $messageId);
+        if(!$message) {
+            return false;
+        }
+
+        $user = $this->getEm()->find(User::class, $user->getId());
+        if(!$user) {
+            return false;
+        }
+
+        /** @var MessageLikeRepository $messageLikeRepo */
+        $messageLikeRepo = $this->getEm()->getRepository('AppBundle:MessageLike');
+        $like = $messageLikeRepo->findByUserId($user->getId(), $messageId);
+
+        if(!$like) {
+            $like = new MessageLike();
+            $like->setUser($user);
+            $like->setMessage($message);
+
+            $message->addLike($like);
+
+            $this->getEm()->persist($message);
+        } else {
+            $this->getEm()->remove($like);
+        }
+
+        $this->getEm()->flush();
+
+        return count($message->getLikes());
     }
 
     /**

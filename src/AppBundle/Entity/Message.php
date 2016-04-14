@@ -54,14 +54,14 @@ class Message
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="MessageAttachment", mappedBy="message", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="MessageAttachment", mappedBy="message", cascade={"persist", "remove"})
      */
     private $attachments;
 
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="MessageLike", mappedBy="message")
+     * @ORM\OneToMany(targetEntity="MessageLike", mappedBy="message", cascade={"persist", "remove"})
      */
     private $likes;
 
@@ -73,7 +73,7 @@ class Message
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -96,7 +96,7 @@ class Message
     /**
      * Get userId
      *
-     * @return integer 
+     * @return integer
      */
     public function getUserId()
     {
@@ -119,7 +119,7 @@ class Message
     /**
      * Get text
      *
-     * @return string 
+     * @return string
      */
     public function getText()
     {
@@ -142,7 +142,7 @@ class Message
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -165,7 +165,7 @@ class Message
     /**
      * Get user
      *
-     * @return \AppBundle\Entity\User 
+     * @return \AppBundle\Entity\User
      */
     public function getUser()
     {
@@ -198,7 +198,7 @@ class Message
     /**
      * Get attachments
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getAttachments()
     {
@@ -231,7 +231,7 @@ class Message
     /**
      * Get likes
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getLikes()
     {
@@ -240,11 +240,26 @@ class Message
 
     public function serialize()
     {
+        $attachments = $this->getAttachments() ? $this->getAttachments()->toArray() : [];
+        $attaches = [];
+
+        // Костыльный сериализатор аттачей, ибо DoctrineCollection не влазит в json_decode.
+        /** @var MessageAttachment $item */
+        foreach ($attachments as $item) {
+            $attaches[] = [
+                'id' => $item->getId(),
+                'type' => $item->getType(),
+                'resource' => $item->getResource(),
+            ];
+        }
+
         return json_encode([
+            'id' => $this->getId(),
+            'userId' => $this->getUser()->getId(),
             'username' => $this->getUser()->getUsername(),
             'text' => $this->getText(),
-            'attachments' => $this->getAttachments(),
-            'likes' => $this->getLikes(),
+            'attachments' => $attaches,
+            'likes' => count($this->getLikes()),
             'createdAt' => $this->getCreatedAt()->format('d.m.Y в H:i'),
         ]);
     }

@@ -63,19 +63,20 @@ class TwachTopic implements TopicInterface
                 $topic->broadcast(['message_create' => $message->serialize()]);
                 break;
             case 'message.delete';
-                // Delete a message;
+                if($this->deleteMessage($connection, $event['data'])) {
+                    $topic->broadcast(['message_delete' => $event['data']['id']]);
+                }
                 break;
             case 'message.like';
-                // Like a message;
+                $likes = $this->likeMessage($connection, $event['data']);
+                dump($likes);
+
+                if(is_int($likes)) {
+                    $topic->broadcast(['message_like' => $event['data']['id'], 'likes' => $likes]);
+                }
+
                 break;
         }
-
-//        if(is_array($event)) {
-//            if(array_key_exists('message[text]', $event)) {
-//                $message = $this->createMessage($connection, $event['message[text]']);
-//                $topic->broadcast(['message' => $message->serialize()]);
-//            }
-//        }
     }
 
     public function getName()
@@ -84,17 +85,11 @@ class TwachTopic implements TopicInterface
     }
 
     /**
-     * Метод возвращает имя пользователя.
+     * Метод возвращает объект авторизованного юзера или false.
      *
      * @param ConnectionInterface $connection
-     * @return false|string|UserInterface
+     * @return false|UserInterface
      */
-    private function getUsername(ConnectionInterface $connection)
-    {
-        $user = $this->getClientManipulator()->getClient($connection);
-        return ($user instanceof UserInterface) ? $user->getUsername() : $user;
-    }
-
     public function getUser(ConnectionInterface $connection)
     {
         $user = $this->getClientManipulator()->getClient($connection);
@@ -127,5 +122,43 @@ class TwachTopic implements TopicInterface
 
         // Сохраняем и возвращаем сообщение.
         return $message->saveMessage();
+    }
+
+    /**
+     * Метод удаляет сообщение по ID.
+     *
+     * @param ConnectionInterface $connection
+     * @param $data
+     * @return bool
+     */
+    private function deleteMessage(ConnectionInterface $connection, array $data)
+    {
+        $user = $this->getUser($connection);
+        if(!$user instanceof User) {
+            return false;
+        }
+
+        if($this->getMessageService()->deleteMessage($data['id'], $user)) {
+            return $data['id'];
+        }
+
+        return false;
+    }
+
+    /**
+     * Метод добавляет или снимает лайк с записи.
+     *
+     * @param ConnectionInterface $connection
+     * @param array $data
+     * @return bool|int
+     */
+    private function likeMessage(ConnectionInterface $connection, array $data)
+    {
+        $user = $this->getUser($connection);
+        if(!$user instanceof User) {
+            return false;
+        }
+
+        return $this->getMessageService()->likeMessage($data['id'], $user);
     }
 }

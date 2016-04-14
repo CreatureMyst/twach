@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\MessageLike;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -12,4 +13,16 @@ use Doctrine\ORM\EntityRepository;
  */
 class MessageLikeRepository extends EntityRepository
 {
+    public function findByUserId($userId, $messageId)
+    {
+        $result = $this->createQueryBuilder('l')
+            ->where('l.messageId = :message_id')
+            ->andWhere('l.userId = :user_id')
+            ->setParameter('message_id', $messageId)
+            ->setParameter('user_id', $userId)
+            ->getQuery()->getResult();
+
+
+        return (array_key_exists(0, $result) && $result[0] instanceof MessageLike) ? $result[0] : false;
+    }
 }

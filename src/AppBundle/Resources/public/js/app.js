@@ -4,21 +4,32 @@ function App(wsUri)
     this.ws = null;
     this.session = null;
     this.attachmentTypes = [];
+    this.userId = null;
     this.debug = true;
     this.channelName = 'app/twach';
     this.form_widgetCounter = 0;
-    this.objects = {
-        wrappers: {
-            attachments: $("#message_attachments"),
-            form: $("#twach_form"),
-            modal: $("#twach_modal"),
-            messages: $(".messages"),
-            message_prototype: $(".message.prototype")
-        },
-        buttons: {
-            form_submit: $("#twach-form-submit"),
-            add_attachment: $(".add-attachment")
-        }
+    this.objects = {};
+
+    /**
+     * Подгрузка всяких нужных DOM объектов в память.
+     */
+    this.loadObjects = function()
+    {
+        this.objects = {
+            wrappers: {
+                attachments: $("#message_attachments"),
+                form: $("#twach_form"),
+                modal: $("#twach_modal"),
+                messages: $(".messages"),
+                message_prototype: $(".message.prototype")
+            },
+            buttons: {
+                form_submit: $("#twach-form-submit"),
+                add_attachment: $(".add-attachment"),
+                delete_message: $(".delete-message"),
+                like_message: $(".likes")
+            }
+        };
     };
 
     /**
@@ -83,9 +94,21 @@ function App(wsUri)
             subscribe: function(channel)
             {
                 _this.session.subscribe(channel, function(uri, payload) {
+                    // Принимаем новое сообщение
                     if(payload.message_create) {
-                        // Принимаем новое сообщение
                         _this.receiveMessage(payload);
+                    }
+
+                    // Удаление сообщения
+                    var id;
+                    if(id = payload.message_delete) {
+                        _this.deleteMessage(id);
+                    }
+
+                    // Лайк сообщения
+                    var id;
+                    if(id = payload.message_like) {
+                        _this.likeMessage(id, payload.likes);
                     }
                 });
             }
@@ -101,6 +124,18 @@ function App(wsUri)
     this.setAttachmentTypes = function(types)
     {
         this.attachmentTypes = types;
+        return this;
+    };
+
+    /**
+     * Метод устанавливает ИД Юзера-клиента.
+     *
+     * @param id
+     * @returns {App}
+     */
+    this.setUserId = function(id)
+    {
+        this.userId = id;
         return this;
     };
 
@@ -133,9 +168,11 @@ function App(wsUri)
      */
     this.load = function()
     {
+        this.loadObjects();
         this.socket().connect();
         this.socket().createSession(this.channelName);
         this.addAttachment();
+        this.prepareTriggers();
     };
 
     /**
@@ -151,8 +188,24 @@ function App(wsUri)
         $prototype.find('.user').html(message.username);
         $prototype.find('.text').html(message.text);
         $prototype.find('.date').html(message.createdAt);
+        $prototype.find('.delete-message').attr('data-id', message.id);
+        if(this.userId == message.userId) {
+            $prototype.find('.delete').addClass('can_delete');
+        }
+
+        $prototype.attr('data-id', message.id);
+        $prototype.find('.likes').attr('data-id', message.id);
+
+        $.each(message.attachments, function(k, v) {
+            var attach = $prototype.find('.attachments .item.type-'+ v.type).data('prototype');
+            attach = attach.replace(/__RESOURCE__/g, v.resource);
+
+            $prototype.find('.attachments').prepend(attach);
+        });
 
         this.objects.wrappers.messages.prepend($prototype);
+        this.loadObjects();
+        this.prepareTriggers();
     };
 
     /**
@@ -197,7 +250,6 @@ function App(wsUri)
             _this.socket().publish(_this.channelName, data);
             _this.clearForm();
             _this.objects.wrappers.modal.modal('hide');
-            _this.dump(data.data);
         })
     };
 
@@ -244,5 +296,61 @@ function App(wsUri)
             var newLi = $('<p></p>').html($widget);
             newLi.appendTo(list);
         });
-    }
+    };
+
+    /**
+     * Подготовка всяких триггеров.
+     */
+    this.prepareTriggers = function()
+    {
+        var _this = this;
+        this.dump('Triggers prepared');
+
+        // Deleting messages
+        this.objects.buttons.delete_message.off('click.twach').on('click.twach', function() {
+            _this.dump('Delete intention');
+
+            var id = $(this).data('id');
+            var data = {
+                event: 'message.delete',
+                data: { id: id }
+            };
+
+            _this.socket().publish(_this.channelName, data);
+        });
+
+        // Like messages
+        this.objects.buttons.like_message.off('click.twach').on('click.twach', function() {
+            _this.dump('Like intention');
+
+            var id = $(this).data('id');
+            var data = {
+                event: 'message.like',
+                data: { id: id }
+            };
+
+            _this.socket().publish(_this.channelName, data);
+        });
+    };
+
+    /**
+     * Удаление сообщения.
+     *
+     * @param id
+     */
+    this.deleteMessage = function(id)
+    {
+        this.objects.wrappers.messages.find('.message[data-id="'+ id +'"]').remove();
+    };
+
+    /**
+     * Лайк да дизлайк.
+     * 
+     * @param id
+     * @param likes
+     */
+    this.likeMessage = function(id, likes)
+    {
+        this.objects.wrappers.messages.find('.message .likes[data-id="'+ id +'"]').html(likes);
+    };
 }

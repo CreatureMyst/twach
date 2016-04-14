@@ -24,6 +24,19 @@ body {
   margin: 10px 0;
   border-radius: 5px;
   padding: 10px;
+  position: relative;
+}
+.messages .message .delete {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  opacity: 0;
+  transition: all 0.3s ease;
+  visibility: hidden;
+}
+.messages .message:hover .delete.can_delete {
+  opacity: 1;
+  visibility: visible;
 }
 .messages .message .user {
   font-size: 1.2em;
@@ -34,6 +47,9 @@ body {
   border: 1px solid #F0F0F0;
   padding: 10px;
   border-radius: 5px;
+}
+.messages .message .attachments .item {
+  display: none;
 }
 .messages .message .date {
   font-size: 0.7em;
