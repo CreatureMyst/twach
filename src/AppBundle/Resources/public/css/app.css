@@ -101,3 +101,9 @@ body {
 .twach-add-button:hover {
   opacity: .7;
 }
+#twach_form .loader {
+  display: none;
+}
+#twach_form .controls {
+  display: block;
+}

@@ -6,8 +6,8 @@ use AppBundle\Entity\User;
 use AppBundle\Form\MessageType;
 use AppBundle\Form\UserType;
 use AppBundle\Repository\MessageRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;     // Аннотации
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;  // Аннотации
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -74,7 +74,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * Аякс-загрузка файлов.
+     * Загрузка файлов.
      *
      * @Route("/app/file-upload")
      * @Security("has_role('ROLE_USER')")

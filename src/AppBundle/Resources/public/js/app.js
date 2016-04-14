@@ -1,9 +1,15 @@
+/**
+ * Класс для работы со всеми фичами.
+ * Тут очень много магии. Наверное. Лучше сразу убегайте отсюда.
+ * 
+ * @param wsUri
+ * @constructor
+ */
 function App(wsUri)
 {
     this.wsUri = wsUri;
     this.ws = null;
     this.session = null;
-    this.attachmentTypes = [];
     this.userId = null;
     this.debug = true;
     this.channelName = 'app/twach';
@@ -119,18 +125,6 @@ function App(wsUri)
                 });
             }
         }
-    };
-
-    /**
-     * Метод устанавливает массив типов аттачей.
-     *
-     * @param types
-     * @returns {App}
-     */
-    this.setAttachmentTypes = function(types)
-    {
-        this.attachmentTypes = types;
-        return this;
     };
 
     /**
@@ -315,6 +309,9 @@ function App(wsUri)
         };
     };
 
+    /**
+     * Метод добавления аттачей. Embed-формы.
+     */
     this.addAttachment = function()
     {
         var _this = this;

@@ -2,7 +2,6 @@
 
 namespace AppBundle\Service;
 
-use AppBundle\AppBundle;
 use AppBundle\Entity\Message;
 use AppBundle\Entity\MessageAttachment;
 use AppBundle\Entity\MessageLike;
@@ -233,6 +232,13 @@ class MessageService
         return $this->clearString($resource);
     }
 
+    /**
+     * Костыльный метод обезопасивания строк. Doctrine конечно же и сама умеет это делать,
+     * но многие вещи выплевываются клиентам в виде сырых данных. А там и XSS может пробежать.
+     *
+     * @param $string
+     * @return mixed
+     */
     private function clearString($string)
     {
         return htmlspecialchars(strip_tags($string));

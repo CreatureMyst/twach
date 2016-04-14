@@ -2,7 +2,6 @@
 
 namespace AppBundle\Service;
 
-use AppBundle\Entity\MessageAttachment;
 use AppBundle\Entity\User;
 use Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
@@ -54,7 +53,7 @@ class TwachTopic implements TopicInterface
     public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
     {
         if(!is_array($event) || !array_key_exists('event', $event)) {
-            return false;
+            return;
         }
 
         switch ($event['event']) {

@@ -13,6 +13,13 @@ use Doctrine\ORM\EntityRepository;
  */
 class MessageLikeRepository extends EntityRepository
 {
+    /**
+     * Метод ищет лайк определенного пользователя и определенного сообщения.
+     *
+     * @param $userId
+     * @param $messageId
+     * @return bool|MessageLike
+     */
     public function findByUserId($userId, $messageId)
     {
         $result = $this->createQueryBuilder('l')
