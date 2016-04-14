@@ -131,7 +131,7 @@ class MessageService
      */
     public function setText($text)
     {
-        $this->getMessage()->setText($text);
+        $this->getMessage()->setText($this->clearString($text));
         return $this;
     }
 
@@ -203,9 +203,15 @@ class MessageService
             return false;
         }
 
-        return substr($url['query'], 2, strlen($url['query']));
+        return $this->clearString(substr($url['query'], 2, strlen($url['query'])));
     }
 
+    /**
+     * Метод форматирует файловый ресурс.
+     *
+     * @param $resource
+     * @return mixed
+     */
     private function formatResourceImage($resource)
     {
         return $resource;
@@ -224,6 +230,11 @@ class MessageService
             $resource = 'http://' . $resource;
         }
 
-        return $resource;
+        return $this->clearString($resource);
+    }
+
+    private function clearString($string)
+    {
+        return htmlspecialchars(strip_tags($string));
     }
 }

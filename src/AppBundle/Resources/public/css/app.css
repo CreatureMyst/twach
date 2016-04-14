@@ -44,9 +44,12 @@ body {
 }
 .messages .message .attachments {
   margin: 10px 30px;
-  border: 1px solid #F0F0F0;
   padding: 10px;
-  border-radius: 5px;
+}
+.messages .message .attachments a,
+.messages .message .attachments img,
+.messages .message .attachments iframe {
+  display: block;
 }
 .messages .message .attachments .item {
   display: none;

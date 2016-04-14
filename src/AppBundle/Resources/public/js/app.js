@@ -9,6 +9,10 @@ function App(wsUri)
     this.channelName = 'app/twach';
     this.form_widgetCounter = 0;
     this.objects = {};
+    this.formData = {
+        attachments: [],
+        message: ''
+    };
 
     /**
      * Подгрузка всяких нужных DOM объектов в память.
@@ -30,6 +34,8 @@ function App(wsUri)
                 like_message: $(".likes")
             }
         };
+
+        this.dump('DOM objects loaded');
     };
 
     /**
@@ -225,29 +231,54 @@ function App(wsUri)
     this.activateForm = function()
     {
         var _this = this;
+        this.objects.wrappers.form.find('input[type="file"]').off('change.twach').on('change.twach', function(e) {
+            var files = e.target.files;
+            var formData = new FormData();
 
-        this.objects.buttons.form_submit.off('click.twach').on('click.twach', function() {
-            var $form = _this.objects.wrappers.form.find('form');
-            var data = {};
+            $.each(files, function(key, val) {
+                formData.append(key, val);
+            });
+
+            $.ajax({
+                url: '/app/file-upload',
+                data: formData,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                success: function(filename) {
+                    var attach = {
+                        type: 2,
+                        resource: filename
+                    };
+
+                    _this.formData.attachments.push(attach);
+                }
+            });
+        });
+
+        this.objects.wrappers.form.find('form').off('submit.twach').on('submit.twach', function(e) {
+            e.preventDefault();
+            var $form = $(this);
 
             // Собираем данные с основной формы
-            $form.serializeArray().map(function(x) {
-                data[x.name] = x.value;
-            });
+            var rawForm = $form.serializeArray();
+            _this.formData.message = rawForm[0].value;
 
             // Собираем аттачи
-            data.attachments = [];
             _this.objects.wrappers.attachments.find('input').each(function(k, v) {
-                var attach = {};
-                attach.type = $(v).data('type');
-                attach.resource = $(v).val();
+                if($(this).data('type') != 2) {
+                    var attach = {};
+                    attach.type = $(v).data('type');
+                    attach.resource = $(v).val();
 
-                data.attachments.push(attach);
+                    _this.formData.attachments.push(attach);
+                }
             });
 
+            _this.dump(_this.formData);
             // Пытаемся отправить все это на сервер
-            data = { event: 'message.create', data: data };
-            _this.socket().publish(_this.channelName, data);
+            var data = { event: 'message.create', data: _this.formData };
+             _this.socket().publish(_this.channelName, data);
             _this.clearForm();
             _this.objects.wrappers.modal.modal('hide');
         })
@@ -261,6 +292,10 @@ function App(wsUri)
         this.objects.wrappers.form.find('form')[0].reset();
         this.objects.wrappers.attachments.html('');
         this.form_widgetCounter = 0;
+        this.formData = {
+            message: '',
+            attachments: []
+        };
     };
 
     this.addAttachment = function()
@@ -295,6 +330,9 @@ function App(wsUri)
 
             var newLi = $('<p></p>').html($widget);
             newLi.appendTo(list);
+
+            _this.loadObjects();
+            _this.activateForm();
         });
     };
 

@@ -9,6 +9,7 @@ use AppBundle\Repository\MessageRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -70,6 +71,29 @@ class DefaultController extends Controller
             'messages' => $messages,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * Аякс-загрузка файлов.
+     *
+     * @Route("/app/file-upload")
+     * @Security("has_role('ROLE_USER')")
+     * @param Request $request
+     * @return Response
+     */
+    public function uploadFileAction(Request $request)
+    {
+        if(!$request->getMethod() == Request::METHOD_POST) {
+            throw $this->createNotFoundException();
+        }
+
+        /** @var UploadedFile $file */
+        foreach ($request->files as $file) {
+            $filename = md5(uniqid() . time())  .'.'. $file->getClientOriginalExtension();
+            $file->move($this->getParameter('upload_ab_dir'), $filename);
+
+            return new Response($this->getParameter('site_url') . $this->getParameter('upload_dir') . $filename);
+        }
     }
 
     /**

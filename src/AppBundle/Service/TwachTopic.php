@@ -69,7 +69,6 @@ class TwachTopic implements TopicInterface
                 break;
             case 'message.like';
                 $likes = $this->likeMessage($connection, $event['data']);
-                dump($likes);
 
                 if(is_int($likes)) {
                     $topic->broadcast(['message_like' => $event['data']['id'], 'likes' => $likes]);
@@ -113,7 +112,7 @@ class TwachTopic implements TopicInterface
         // Обращаемся к специальному сервису для сообщений.
         $message = $this->getMessageService()
             ->createMessage($user)
-            ->setText($data['message[text]']);
+            ->setText($data['message']);
 
         // Задаем аттачи.
         foreach($data['attachments'] as $attachment) {
