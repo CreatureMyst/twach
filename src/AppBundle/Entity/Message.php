@@ -46,7 +46,7 @@ class Message
     /**
      * @var User
      *
-     * @ORM\ManyToOne(targetEntity="User", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="messages", cascade={"persist"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;
@@ -54,7 +54,7 @@ class Message
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="MessageAttachment", mappedBy="message")
+     * @ORM\OneToMany(targetEntity="MessageAttachment", mappedBy="message", cascade={"persist"})
      */
     private $attachments;
 

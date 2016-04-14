@@ -1,0 +1,36 @@
+{% set hasMsg = message is defined %}
+
+<div class="message {% if not hasMsg %}prototype{% endif %}">
+    <div class="user">{% if hasMsg %}{{ message.user.username }}{% endif %}</div>
+    <div class="text">{% if hasMsg %}{{ message.text }}{% endif %}</div>
+
+    {% if hasMsg and message.attachments | length %}
+        <div class="attachments">
+            {% for attach in message.attachments %}
+
+                {% if attach.type == constant('AppBundle\\Entity\\MessageAttachment::TYPE_LINK') %}
+                    <div class="item link">
+                        <a href="{{ attach.resource }}">{{ attach.resource }}</a>
+                    </div>
+                {% endif %}
+
+                {% if attach.type == constant('AppBundle\\Entity\\MessageAttachment::TYPE_IMAGE') %}
+                    <img src="{{ attach.resource }}" alt="{{ attach.resource }}" class="img-responsive">
+                {% endif %}
+
+                {% if attach.type == constant('AppBundle\\Entity\\MessageAttachment::TYPE_YOUTUBE') %}
+                    <iframe width="100%" height="300" src="https://www.youtube.com/embed/{{ attach.resource }}" frameborder="0" allowfullscreen></iframe>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="pull-left">
+        <div class="date">{% if hasMsg %}{{ message.createdAt | date('d.m.Y в H:i') }}{% endif %}</div>
+    </div>
+    <div class="pull-right">
+        <div class="likes">{% if hasMsg %}{{ message.likes | length }}{% else %}0{% endif %}</div>
+    </div>
+
+    <div class="clearfix"></div>
+</div>

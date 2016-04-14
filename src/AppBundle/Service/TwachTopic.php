@@ -2,6 +2,7 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\MessageAttachment;
 use AppBundle\Entity\User;
 use Gos\Bundle\WebSocketBundle\Client\ClientManipulatorInterface;
 use Gos\Bundle\WebSocketBundle\Router\WampRequest;
@@ -42,22 +43,39 @@ class TwachTopic implements TopicInterface
 
     public function onSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
-        $topic->broadcast(['msg' => $this->getUsername($connection) . ' was joined']);
+//        $topic->broadcast(['msg' => $this->getUsername($connection) . ' was joined']);
     }
 
     public function onUnSubscribe(ConnectionInterface $connection, Topic $topic, WampRequest $request)
     {
-        $topic->broadcast(['msg' => $this->getUsername($connection) . ' offline']);
+//        $topic->broadcast(['msg' => $this->getUsername($connection) . ' offline']);
     }
 
     public function onPublish(ConnectionInterface $connection, Topic $topic, WampRequest $request, $event, array $exclude, array $eligible)
     {
-        if(is_array($event)) {
-            if(array_key_exists('message[text]', $event)) {
-                $message = $this->createMessage($connection, $event['message[text]']);
-                $topic->broadcast(['message' => $message->serialize()]);
-            }
+        if(!is_array($event) || !array_key_exists('event', $event)) {
+            return false;
         }
+
+        switch ($event['event']) {
+            case 'message.create':
+                $message = $this->createMessage($connection, $event['data']);
+                $topic->broadcast(['message_create' => $message->serialize()]);
+                break;
+            case 'message.delete';
+                // Delete a message;
+                break;
+            case 'message.like';
+                // Like a message;
+                break;
+        }
+
+//        if(is_array($event)) {
+//            if(array_key_exists('message[text]', $event)) {
+//                $message = $this->createMessage($connection, $event['message[text]']);
+//                $topic->broadcast(['message' => $message->serialize()]);
+//            }
+//        }
     }
 
     public function getName()
@@ -83,16 +101,31 @@ class TwachTopic implements TopicInterface
         return ($user instanceof UserInterface) ? $user : false;
     }
 
-    private function createMessage(ConnectionInterface $connection, $text)
+    /**
+     * Метод создает сообщение.
+     *
+     * @param ConnectionInterface $connection
+     * @param $data
+     * @return \AppBundle\Entity\Message|bool
+     */
+    private function createMessage(ConnectionInterface $connection, $data)
     {
         $user = $this->getUser($connection);
         if(!$user instanceof User) {
             return false;
         }
 
-        return $this->getMessageService()
+        // Обращаемся к специальному сервису для сообщений.
+        $message = $this->getMessageService()
             ->createMessage($user)
-            ->setText($text)
-            ->saveMessage();
+            ->setText($data['message[text]']);
+
+        // Задаем аттачи.
+        foreach($data['attachments'] as $attachment) {
+            $message->setAttachment($attachment['type'], $attachment['resource']);
+        }
+
+        // Сохраняем и возвращаем сообщение.
+        return $message->saveMessage();
     }
 }

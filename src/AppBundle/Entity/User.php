@@ -30,6 +30,13 @@ class User implements AdvancedUserInterface, \Serializable
      */
     private $username;
 
+    /**
+     * @var ArrayCollection
+     * 
+     * @ORM\OneToMany(targetEntity="Message", mappedBy="user")
+     */
+    private $messages;
+
 
     /**
      * Get id

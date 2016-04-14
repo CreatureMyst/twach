@@ -14,9 +14,9 @@ ws.on('socket/connect', function(session) {
 
     $("#twach-form-submit").off('click.twach').on('click.twach', function() {
         var $form = $("#twach-form").find('form');
-        var data = {};
+        var data = submitForm($form);
 
-        $form.serializeArray().map(function(x){data[x.name] = x.value;});
+        // $form.serializeArray().map(function(x){data[x.name] = x.value;});
         session.publish('app/twach', data);
 
         $("#twach-modal").modal('hide');

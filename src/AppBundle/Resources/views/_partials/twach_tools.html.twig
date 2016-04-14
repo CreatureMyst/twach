@@ -1,0 +1,47 @@
+<div class="twach-add-button" data-toggle="modal" data-target="#twach_modal">
+    <i class="glyphicon glyphicon-plus"></i>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="twach_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Новый пост</h4>
+            </div>
+            <div class="modal-body">
+                <div id="twach_form">
+                    {{ form_start(form) }}
+                        {{ form_widget(form.text, { attr: { class: 'form-control' }}) }}
+
+                        <p>&nbsp;</p>
+                        {{ form_widget(form.attachments) }}
+                    {{ form_end(form) }}
+                </div>
+
+                <div class="btn-group" role="group">
+                    <button type="button"
+                            class="btn btn-default add-attachment"
+                            data-type="{{ constant("AppBundle\\Entity\\MessageAttachment::TYPE_LINK") }}">
+                        <i class="glyphicon glyphicon-link"></i>
+                    </button>
+                    <button type="button"
+                            class="btn btn-default add-attachment"
+                            data-type="{{ constant("AppBundle\\Entity\\MessageAttachment::TYPE_IMAGE") }}">
+                        <i class="glyphicon glyphicon-picture"></i>
+                    </button>
+                    <button type="button"
+                            class="btn btn-default add-attachment"
+                            data-type="{{ constant("AppBundle\\Entity\\MessageAttachment::TYPE_YOUTUBE") }}">
+                        <i class="glyphicon glyphicon-facetime-video"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Отбой</button>
+                <button type="button" class="btn btn-primary" id="twach-form-submit">Запилить пост</button>
+            </div>
+        </div>
+    </div>
+</div>
