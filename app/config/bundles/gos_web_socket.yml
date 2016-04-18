@@ -1,7 +1,7 @@
 gos_web_socket:
     server:
-        host: 127.0.0.1
-        port: 8080
+        host: %app_host%
+        port: %app_port%
         router:
             resources:
                 - "@AppBundle/Resources/config/pubsub_routing.yml"

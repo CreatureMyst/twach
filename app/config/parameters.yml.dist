@@ -16,7 +16,9 @@ parameters:
     mailer_password:   ~
 
     # A secret key that's used to generate certain security-related tokens
+    app_host:          127.0.0.1                # App and WebSocket hostname
+    app_port:          8080                     # WebSocket port
     secret:            ThisTokenIsNotSoSecretChangeIt
-    site_url:          "http://127.0.0.1:8000/"
+    site_url:          "http://%app_host%/"
     upload_dir:        uploads/
     upload_ab_dir:     %kernel.root_dir%/../web/%upload_dir%
